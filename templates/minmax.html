@@ -1,0 +1,56 @@
+<div class='minmax'>
+  <div class='boardMaster' style='width: {{boardMaster.const.rank() * 40}}px;'>
+    <div class='score'>
+      <div class='score-item black col-xs-6' ng-class="{'current-turn':boardMaster.current.turn(boardMaster.const.TURN.BLACK) &amp;&amp; !boardMaster.isFinished()}">
+        <i class='fa fa-star-o' ng-show='boardMaster.isFinished() &amp;&amp; boardMaster.current.result() &gt; 0'></i>
+        {{ boardMaster.current.score(boardMaster.const.TURN.BLACK) }}
+      </div>
+      <div class='score-item white col-xs-6' ng-class="{'current-turn':boardMaster.current.turn(boardMaster.const.TURN.WHITE) &amp;&amp; !boardMaster.isFinished()}">
+        <i class='fa fa-star-o' ng-show='boardMaster.isFinished() &amp;&amp; boardMaster.current.result() &lt; 0'></i>
+        {{ boardMaster.current.score(boardMaster.const.TURN.WHITE) }}
+      </div>
+    </div>
+    <div class='board'>
+      <div class='row' ng-repeat='i in rankList'>
+        <div class='panel col-md-1' ng-class='{selectable: boardMaster.selectable([i, j]), used: boardMaster.used([i, j])}' ng-click='clickCell(i, j)' ng-repeat='j in rankList' style='width: 40px; height: 40px;'>
+          <div class='inner-panel'>{{ boardMaster.get([i, j]) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='sns'>
+    <div class='twitter'>
+      <a class='twitter-hashtag-button' href='https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Famo12937.github.io%2Fminmax_web%2F&amp;text=now%20playing%20%23minmaxO_O&amp;url=http%3A%2F%2Famo12937.github.io%2Fminmax_web%2F'>Tweet</a>
+      <script type='text/javascript-lazy'>
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+      </script>
+    </div>
+  </div>
+  <div class='result' ng-show='boardMaster.isFinished()'>
+    <label ng-show='boardMaster.current.result() == 0'>{{ "Drawn!"|trans }}</label>
+    <label ng-hide='boardMaster.current.result() == 0'>{{ "%name% win!"|trans:{name:winner.name} }}</label>
+  </div>
+  <div class='menu' ng-show='boardMaster.isFinished()'>
+    <div class='form-inline'>
+      <div class='form-group'>
+        <button class='btn btn-default' ng-click='play()'>{{ "replay"|trans }}</button>
+      </div>
+      <div class='form-group'>
+        <label>{{ "level"|trans }}</label>
+        <select class='form-control' ng-model='p2_level' ng-options='v for v in levels'></select>
+      </div>
+    </div>
+  </div>
+  <div class='help'>
+    <h2>{{ "How to play"|trans }}</h2>
+    <ul>
+      <li>{{ "It is the game to compete the total score by taking panel alternately."|trans }}</li>
+      <li>{{ "First-move can choose any panel at first."|trans }}</li>
+      <li>{{ "Second-move can choose the panel on the same col that chosen by First-move."|trans }}</li>
+      <li>{{ "First-move can choose the panel on the same row that chosen by Second-move."|trans }}</li>
+      <li>{{ "You can not choose the panel already chosen."|trans }}</li>
+      <li>{{ "You can not pass."|trans }}</li>
+      <li>{{ "The game ends when no panels can choose."|trans}}</li>
+    </ul>
+  </div>
+</div>
