@@ -35,10 +35,14 @@
           p1_name: opts.p1_name || translator("You"),
           p1_level: toNum(opts.p1_level, 5),
           p1_delay: toNum(opts.p1_delay, 100),
+          p1_win: toNum(opts.p1_win, 0),
           p2: opts.p2 || playerTypes.COMAB,
           p2_name: opts.p2_name || translator("Com"),
           p2_level: toNum(opts.p2_level, 5),
-          p2_delay: toNum(opts.p2_delay, 100)
+          p2_delay: toNum(opts.p2_delay, 100),
+          p2_win: toNum(opts.p2_win, 0),
+          draw: toNum(opts.draw, 0),
+          auto: opts.auto === "true"
         };
         $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $scope.p2_level = options.p2_level;
@@ -59,13 +63,23 @@
             console.log("end");
             result = boardMaster.current.result();
             if (result > 0) {
-              return $scope.winner = {
+              $scope.winner = {
                 name: p1.name()
               };
+              options.p1_win++;
             } else if (result < 0) {
-              return $scope.winner = {
+              $scope.winner = {
                 name: p2.name()
               };
+              options.p2_win++;
+            } else {
+              options.draw++;
+            }
+            if (options.auto) {
+              $location.search("p1_win", options.p1_win);
+              $location.search("p2_win", options.p2_win);
+              $location.search("draw", options.draw);
+              return $scope.play();
             }
           },
           stop: function() {
