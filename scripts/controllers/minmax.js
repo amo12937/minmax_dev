@@ -1,8 +1,8 @@
 (function() {
   "use strict";
   (function(modulePrefix) {
-    return angular.module("" + modulePrefix + ".controllers", ["ng", "ngRoute", "" + modulePrefix + ".BoardMaster", "" + modulePrefix + ".Player", "" + modulePrefix + ".GameMaster", "" + modulePrefix + ".module.Translator"]).controller("" + modulePrefix + ".controllers.minmax", [
-      "$location", "$route", "$scope", "" + modulePrefix + ".BoardMaster.RandomScoreCreator", "" + modulePrefix + ".BoardMaster.Board", "" + modulePrefix + ".BoardMaster.BoardMaster", "" + modulePrefix + ".Player.Man", "" + modulePrefix + ".Player.Com.AlphaBeta", "" + modulePrefix + ".Player.Com", "" + modulePrefix + ".Player.Com.DoubleChecker", "" + modulePrefix + ".GameMaster.GameMaster", "amo.module.Translator.translatorCollection", function($location, $route, $scope, RandomScoreCreator, Board, BoardMaster, Man, ComAB, Com, ComDC, GameMaster, translatorCollection) {
+    return angular.module("" + modulePrefix + ".controllers", ["ng", "ngRoute", "" + modulePrefix + ".BoardMaster", "" + modulePrefix + ".Player", "" + modulePrefix + ".GameMaster", "" + modulePrefix + ".module.translator"]).controller("" + modulePrefix + ".controllers.minmax", [
+      "$location", "$route", "$scope", "" + modulePrefix + ".BoardMaster.RandomScoreCreator", "" + modulePrefix + ".BoardMaster.Board", "" + modulePrefix + ".BoardMaster.BoardMaster", "" + modulePrefix + ".Player.Man", "" + modulePrefix + ".Player.Com.AlphaBeta", "" + modulePrefix + ".Player.Com", "" + modulePrefix + ".Player.Com.DoubleChecker", "" + modulePrefix + ".GameMaster.GameMaster", "amo.module.translator.translatorCollection", function($location, $route, $scope, RandomScoreCreator, Board, BoardMaster, Man, ComAB, Com, ComDC, GameMaster, translatorCollection) {
         var board, boardMaster, createPlayer, createScore, gameMaster, gameMasterDelegate, options, opts, p1, p2, playerClass, playerTypes, players, toNum, translator, _i, _ref, _results;
         playerTypes = {
           "MAN": "MAN",
