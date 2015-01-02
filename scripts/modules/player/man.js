@@ -14,17 +14,13 @@
             if (!boardMaster.selectable(p)) {
               return;
             }
-            deferred.resolve(p);
+            boardMaster.select(p);
+            deferred.resolve(boardMaster.isFinished());
             return deferred = null;
           };
-          self.play = function(callback) {
-            var promise;
+          self.play = function() {
             deferred = $q.defer();
-            promise = deferred.promise;
-            promise.then(function(p) {
-              boardMaster.select(p);
-              return callback(boardMaster.isFinished());
-            });
+            return deferred.promise;
           };
           return self;
         };

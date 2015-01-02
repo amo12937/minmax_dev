@@ -2,7 +2,7 @@
   "use strict";
   (function(moduleName) {
     return angular.module(moduleName).factory("" + moduleName + ".Com.Base", [
-      "$timeout", "" + moduleName + ".PlayerBase", function($timeout, PlayerBase) {
+      "$timeout", "$q", "" + moduleName + ".PlayerBase", function($timeout, $q, PlayerBase) {
         return function(name, boardMaster, maxDepth, delay) {
           var self;
           if (maxDepth == null) {
@@ -12,13 +12,16 @@
             delay = 0;
           }
           self = PlayerBase(name);
-          self.play = function(callback) {
-            return $timeout(function() {
+          self.play = function() {
+            var deferred;
+            deferred = $q.defer();
+            $timeout(function() {
               var pos;
               pos = self.getChosen(maxDepth);
               boardMaster.select(pos);
-              return callback(boardMaster.isFinished());
+              return deferred.resolve(boardMaster.isFinished());
             }, delay);
+            return deferred.promise;
           };
           return self;
         };
