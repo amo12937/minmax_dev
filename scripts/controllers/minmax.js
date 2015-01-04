@@ -97,8 +97,6 @@
         };
         return $scope.clickCell = function(i, j) {
           board.current.player().select([i, j]);
-          console.log(board.current.getSelectableList());
-          return console.log(com.getChosen());
         };
       }
     ]);

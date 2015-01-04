@@ -7,7 +7,7 @@ do (moduleName = "amo.minmax.module.board") ->
 
   angular.module moduleName, ["ng"]
   .factory "#{moduleName}.RandomScoreCreator", ->
-     (min, max) -> -> Math.floor(Math.random() * (max - min + 1)) + min
+    (min, max) -> -> Math.floor(Math.random() * (max - min + 1)) + min
 
   .factory "#{moduleName}.Board", [
     "#{moduleName}.RandomScoreCreator"

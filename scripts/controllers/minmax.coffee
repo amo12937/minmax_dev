@@ -99,6 +99,5 @@ do (modulePrefix = "amo.minmax") ->
 
       $scope.clickCell = (i, j) ->
         board.current.player().select [i, j]
-        console.log board.current.getSelectableList()
-        console.log com.getChosen()
+        return
   ]
