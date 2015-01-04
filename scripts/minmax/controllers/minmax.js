@@ -19,7 +19,7 @@
           return Number(n);
         };
         createStrategy = function(type, board, delay, level) {
-          return playerClass[type](board, Math.max(delay, 0), Math.max(level, 1));
+          return playerClass[type](board, Math.max(delay, 0), Math.max(level - 1, 0));
         };
         translator = translatorCollection.getTranslator("trans");
         opts = $location.search();
