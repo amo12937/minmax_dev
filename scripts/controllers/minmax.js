@@ -1,20 +1,16 @@
 (function() {
   "use strict";
   (function(modulePrefix) {
-    return angular.module("" + modulePrefix + ".controllers", ["ng", "ngRoute", "amo.module.game.game", "" + modulePrefix + ".BoardMaster", "" + modulePrefix + ".Player", "" + modulePrefix + ".module.translator"]).controller("" + modulePrefix + ".controllers.minmax", [
-      "$location", "$route", "$scope", "amo.module.game.game.Game", "" + modulePrefix + ".BoardMaster.RandomScoreCreator", "" + modulePrefix + ".BoardMaster.Board", "" + modulePrefix + ".BoardMaster.BoardMaster", "" + modulePrefix + ".Player.Man", "" + modulePrefix + ".Player.Com.AlphaBeta", "" + modulePrefix + ".Player.Com", "" + modulePrefix + ".Player.Com.DoubleChecker", "amo.module.translator.translatorCollection", function($location, $route, $scope, Game, RandomScoreCreator, Board, BoardMaster, Man, ComAB, Com, ComDC, translatorCollection) {
-        var board, boardMaster, createPlayer, createScore, game, gameDelegate, options, opts, p1, p2, playerClass, playerTypes, players, toNum, translator, _i, _ref, _results;
+    return angular.module("" + modulePrefix + ".controllers", ["ng", "ngRoute", "amo.module.game.game", "amo.module.game.player", "amo.minmax.module.board", "amo.minmax.module.translator"]).controller("" + modulePrefix + ".controllers.minmax", [
+      "$location", "$route", "$scope", "amo.module.game.game.Game", "amo.module.game.player.Player", "amo.module.game.player.strategy.Man", "amo.module.game.player.strategy.Com.AlphaBeta", "amo.minmax.module.board.Board", "amo.module.translator.translatorCollection", function($location, $route, $scope, Game, Player, Man, Com, Board, translatorCollection) {
+        var board, com, createStrategy, game, gameDelegate, man, options, opts, p1, p2, playerClass, playerTypes, toNum, translator, _i, _ref, _results;
         playerTypes = {
           "MAN": "MAN",
-          "COM": "COM",
-          "COMAB": "COMAB",
-          "COMDC": "COMDC"
+          "COM": "COM"
         };
         playerClass = {
           MAN: Man,
-          COM: Com,
-          COMAB: ComAB,
-          COMDC: ComDC
+          COM: Com
         };
         toNum = function(n, d) {
           if (!n) {
@@ -22,8 +18,8 @@
           }
           return Number(n);
         };
-        createPlayer = function(type, name, level, delay) {
-          return playerClass[type](name, $scope.boardMaster, Math.max(level, 1), Math.max(delay, 0));
+        createStrategy = function(type, board, delay, level) {
+          return playerClass[type](board, Math.max(delay, 0), Math.max(level, 1));
         };
         translator = translatorCollection.getTranslator("trans");
         opts = $location.search();
@@ -36,7 +32,7 @@
           p1_level: toNum(opts.p1_level, 5),
           p1_delay: toNum(opts.p1_delay, 100),
           p1_win: toNum(opts.p1_win, 0),
-          p2: opts.p2 || playerTypes.COMAB,
+          p2: opts.p2 || playerTypes.COM,
           p2_name: opts.p2_name || translator("Com"),
           p2_level: toNum(opts.p2_level, 5),
           p2_delay: toNum(opts.p2_delay, 100),
@@ -46,25 +42,29 @@
         };
         $scope.levels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $scope.p2_level = options.p2_level;
-        createScore = RandomScoreCreator(options.min, options.max);
-        board = Board(options.rank, createScore, "outside");
-        $scope.boardMaster = boardMaster = BoardMaster(board);
+        p1 = Player(options.p1_name);
+        p2 = Player(options.p2_name);
+        board = Board(p1, p2, options.rank, options.min, options.max);
+        man = createStrategy(options.p1, board, options.p1_delay, options.p1_level);
+        com = createStrategy(options.p2, board, options.p2_delay, options.p2_level);
+        p1.changeStrategy(man);
+        p2.changeStrategy(com);
+        $scope.board = board;
         $scope.rankList = (function() {
           _results = [];
           for (var _i = 0, _ref = options.rank - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
           return _results;
         }).apply(this);
-        players = {};
-        players[boardMaster["const"].TURN.BLACK] = p1 = createPlayer(options.p1, options.p1_name, options.p1_level, options.p1_delay);
-        players[boardMaster["const"].TURN.WHITE] = p2 = createPlayer(options.p2, options.p2_name, options.p2_level, options.p2_delay);
+        $scope.p1 = p1;
+        $scope.p2 = p2;
         gameDelegate = {
           getNextPlayer: function() {
-            return players[boardMaster.current.turn()];
+            return board.current.player();
           },
           end: function() {
             var result;
             console.log("end");
-            result = boardMaster.current.result();
+            result = board.current.value(board["const"].TURN.BLACK);
             if (result > 0) {
               $scope.winner = {
                 name: p1.name()
@@ -96,8 +96,9 @@
           return $route.reload();
         };
         return $scope.clickCell = function(i, j) {
-          var _base;
-          return typeof (_base = players[boardMaster.current.turn()]).choice === "function" ? _base.choice([i, j]) : void 0;
+          board.current.player().select([i, j]);
+          console.log(board.current.getSelectableList());
+          return console.log(com.getChosen());
         };
       }
     ]);
